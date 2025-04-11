@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeHeader({ apelido }: { apelido: string }) {
 const [menuAberto, setMenuAberto] = useState(false);
@@ -29,7 +30,7 @@ return (
                 router.push('./perfil');
             }}
             >
-            <Text style={styles.menuText}>👤 Ver Perfil</Text>
+            <Text style={styles.menuText}>👤 Perfil</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -41,6 +42,18 @@ return (
             >
             <Text style={styles.menuText}>✏️ Atualizar Perfil</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+            style={styles.menuItem}
+            onPress={async () => {
+                setMenuAberto(false);
+                await AsyncStorage.clear();
+                router.replace('/'); 
+            }}
+            >
+            <Text style={styles.menuText}>🚪 Sair</Text>
+            </TouchableOpacity>
+
         </View>
         )}
     </View>

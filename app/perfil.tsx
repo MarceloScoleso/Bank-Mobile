@@ -70,7 +70,7 @@ return (
     )}
 
     <TouchableOpacity style={styles.botao} onPress={() => router.push('/home')}>
-        <Text style={styles.textoBotao}>← Voltar para a Home</Text>
+        <Text style={styles.textoBotao}>⬅️ Voltar para a Home</Text>
     </TouchableOpacity>
     </ScrollView>
 );
