@@ -15,7 +15,7 @@ saldo: number;
 tipo: string;
 }
 
-export default function ListarContas() {
+export default function Page() {
 const [contas, setContas] = useState<Conta[]>([]);
 const [loading, setLoading] = useState(true);
 const [apelido, setApelido] = useState<string | null>(null);

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login() {
+export default function Page() {
   const router = useRouter();
 
   const [apelido, setApelido] = useState('');

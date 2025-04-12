@@ -10,11 +10,11 @@ const funcionalidades = [
   { titulo: 'Consultar Saldo', rota: '/saldo', emoji: '💰', cor: '#3b82f6' },
   { titulo: 'Ver Extrato', rota: '/extrato', emoji: '📄', cor: '#38bdf8' },
   { titulo: 'Resumo Financeiro', rota: '/contas/resumo-transacoes', emoji: '📊', cor: '#14b8a6' },
-  { titulo: 'Fazer Transferência', rota: '/transferencias', emoji: '🔁', cor: '#22c55e' },
+  { titulo: 'Fazer Transferência', rota: '/fazer-transferencia', emoji: '🔁', cor: '#22c55e' },
   { titulo: 'Ver Transferências', rota: '/transferencias', emoji: '📑', cor: '#f59e0b' },
 ] as const;
 
-export default function Home() {
+export default function Page() {
   const [apelido, setApelido] = useState<string | null>(null);
   const router = useRouter();
 

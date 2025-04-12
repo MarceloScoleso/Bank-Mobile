@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-export default function ConsultarSaldo() {
+export default function Page() {
   const [saldo, setSaldo] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);

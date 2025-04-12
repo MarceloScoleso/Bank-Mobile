@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
-export default function Perfil() {
+export default function Page() {
 const [perfil, setPerfil] = useState<any>(null);
 const [carregando, setCarregando] = useState(true);
 const router = useRouter();

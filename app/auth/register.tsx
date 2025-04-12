@@ -2,7 +2,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
-export default function Register() {
+export default function Page() {
 const router = useRouter();
 
 const [nome, setNome] = useState('');
