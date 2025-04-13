@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Alert,
-  ActivityIndicator,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, Alert, ActivityIndicator, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import BotaoVoltarHome from "@/components/BotãoHome";
 
 export default function FazerTransferencia() {
   const [apelidoDestino, setApelidoDestino] = useState("");
   const [valor, setValor] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [categoria, setCategoria] = useState(""); // 👈 novo campo
+  const [categoria, setCategoria] = useState(""); 
   const [carregando, setCarregando] = useState(false);
   const [saldoAtual, setSaldoAtual] = useState<number | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [apelido, setApelido] = useState("");
+  const [mostrarSaldo, setMostrarSaldo] = useState(false); // Controle para mostrar ou esconder o saldo
   const router = useRouter();
 
   const buscarSaldo = async () => {
@@ -121,7 +114,20 @@ export default function FazerTransferencia() {
 
         <Text style={styles.saldo}>
           Saldo disponível:{" "}
-          {saldoAtual === null ? "Carregando..." : `R$ ${saldoAtual.toFixed(2)}`}
+          {saldoAtual === null
+            ? "Carregando..."
+            : mostrarSaldo
+            ? `R$ ${saldoAtual.toFixed(2)}`
+            : "••••••"
+          }
+          {/* Ícone de mostrar saldo */}
+          {!carregando && saldoAtual !== null && (
+            <TouchableOpacity onPress={() => setMostrarSaldo(!mostrarSaldo)}>
+              <Text style={styles.olhoIcon}>
+                {mostrarSaldo ? "🙈" : "👁️"}
+              </Text>
+            </TouchableOpacity>
+          )}
         </Text>
 
         <TextInput
@@ -150,23 +156,23 @@ export default function FazerTransferencia() {
           onChangeText={setDescricao}
         />
 
-<Picker
-  selectedValue={categoria}
-  style={styles.picker}
-  dropdownIconColor="#f9fafb"
-  onValueChange={(itemValue) => setCategoria(itemValue)}
->
-  <Picker.Item label="Selecione uma categoria (opcional)" value="" />
-  <Picker.Item label="Moradia" value="Moradia" />
-  <Picker.Item label="Transporte" value="Transporte" />
-  <Picker.Item label="Alimentação" value="Alimentação" />
-  <Picker.Item label="Educação" value="Educação" />
-  <Picker.Item label="Lazer" value="Lazer" />
-  <Picker.Item label="Saúde" value="Saúde" />
-  <Picker.Item label="Investimento" value="Investimento" />
-  <Picker.Item label="Presentes" value="Presentes" />
-  <Picker.Item label="Outros" value="Outros" />
-</Picker>
+        <Picker
+          selectedValue={categoria}
+          style={styles.picker}
+          dropdownIconColor="#f9fafb"
+          onValueChange={(itemValue) => setCategoria(itemValue)}
+        >
+          <Picker.Item label="Selecione uma categoria (opcional)" value="" />
+          <Picker.Item label="Moradia" value="Moradia" />
+          <Picker.Item label="Transporte" value="Transporte" />
+          <Picker.Item label="Alimentação" value="Alimentação" />
+          <Picker.Item label="Educação" value="Educação" />
+          <Picker.Item label="Lazer" value="Lazer" />
+          <Picker.Item label="Saúde" value="Saúde" />
+          <Picker.Item label="Investimento" value="Investimento" />
+          <Picker.Item label="Presentes" value="Presentes" />
+          <Picker.Item label="Outros" value="Outros" />
+        </Picker>
 
         {carregando ? (
           <ActivityIndicator size="large" color="#3b82f6" style={{ marginTop: 20 }} />
@@ -176,9 +182,7 @@ export default function FazerTransferencia() {
               <Text style={styles.textoBotao}>Confirmar Transferência</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.back()} style={styles.voltarBotao}>
-              <Text style={styles.voltarTexto}>⬅️ Voltar para a Home</Text>
-            </TouchableOpacity>
+            <BotaoVoltarHome />
           </>
         )}
       </ScrollView>
@@ -208,6 +212,11 @@ const styles = StyleSheet.create({
     color: "#22d3ee",
     fontWeight: "bold",
   },
+  olhoIcon: {
+    fontSize: 20,
+    marginLeft: 8,
+    color: "#22d3ee",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#374151",
@@ -219,7 +228,7 @@ const styles = StyleSheet.create({
     color: "#f9fafb",
   },
   picker: {
-    height: 56, // 👈 altura igual ao TextInput com padding
+    height: 56, 
     borderWidth: 1,
     borderColor: "#374151",
     borderRadius: 14,
@@ -242,18 +251,6 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   textoBotao: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  voltarBotao: {
-    backgroundColor: "#4e9efc",
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  voltarTexto: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",

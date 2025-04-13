@@ -6,13 +6,14 @@ import { router } from 'expo-router';
 // Componentes reutilizáveis
 import HomeHeader from '../components/Header';
 import Footer from '../components/Footer';
+import BotaoVoltarHome from '@/components/BotãoHome';
 
 interface Conta {
 id: number;
 nome: string;
-numero: string;
+apelido: string;
 saldo: number;
-tipo: string;
+tipoConta: string;
 }
 
 export default function Page() {
@@ -32,14 +33,14 @@ useEffect(() => {
         setLoading(false);
         return;
         }
-
+        
         const resposta = await fetch('https://mock-bank-mock-back.yexuz7.easypanel.host/contas', {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
         },
         });
-
+        
         if (!resposta.ok) {
         throw new Error(`Erro ${resposta.status}: ${resposta.statusText}`);
         }
@@ -72,18 +73,16 @@ return (
         renderItem={({ item }) => (
         <View style={styles.card}>
             <Text style={styles.nome}>🏷️ {item.nome}</Text>
-            <Text style={styles.numero}>🔢 Nº da Conta: {item.numero}</Text>
+            <Text style={styles.apelido}>✍️ Apelido da Conta: {item.apelido}</Text>
             <Text style={styles.saldo}>💰 Saldo: R$ {item.saldo.toFixed(2)}</Text>
-            <Text style={styles.tipo}>📘 Tipo: {item.tipo}</Text>
+            <Text style={styles.tipoConta}>📘 Tipo: {item.tipoConta}</Text>
         </View>
         )}
         ListEmptyComponent={<Text style={styles.vazio}>Nenhuma conta encontrada.</Text>}
     />
     )}
 
-    <TouchableOpacity style={styles.botao} onPress={() => router.push('/home')}>
-    <Text style={styles.textoBotao}>⬅️ Voltar para a Home</Text>
-    </TouchableOpacity>
+    <BotaoVoltarHome />
 </View>
 
 <Footer />
@@ -125,7 +124,7 @@ nome: {
     fontWeight: 'bold',
     marginBottom: 6,
 },
-numero: {
+apelido: {
     color: '#ccc',
     fontSize: 14,
     marginBottom: 4,
@@ -136,22 +135,9 @@ saldo: {
     marginBottom: 4,
     fontWeight: 'bold',
 },
-tipo: {
+tipoConta: {
     color: '#38bdf8',
     fontSize: 14,
-},
-botao: {
-    backgroundColor: '#4e9efc',
-    padding: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-},
-textoBotao: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
 },
 vazio: {
     color: '#aaa',

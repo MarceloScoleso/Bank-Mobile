@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeHeader({ apelido }: { apelido: string }) {
+export default function Header({ apelido }: { apelido: string }) {
 const [menuAberto, setMenuAberto] = useState(false);
 const router = useRouter();
 

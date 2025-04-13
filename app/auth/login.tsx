@@ -2,12 +2,14 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function Page() {
   const router = useRouter();
 
   const [apelido, setApelido] = useState('');
   const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Estado para controlar a visibilidade da senha
 
   const handleLogin = async () => {
     if (!apelido || !senha) {
@@ -50,7 +52,11 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Entrar no Sistema</Text>
+      <Text style={styles.title}>🏦 Bank</Text>
+      <Text style={styles.description}>
+        Seu banco digital moderno, rápido e seguro.
+      </Text>
+      <Text style={styles.subTitle}>Entrar no Sistema</Text>
 
       <TextInput
         style={styles.input}
@@ -60,15 +66,20 @@ export default function Page() {
         onChangeText={setApelido}
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        placeholderTextColor="#888"
-        value={senha}
-        onChangeText={setSenha}
-        autoCapitalize="none"
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          secureTextEntry={!showPassword} // Controla se a senha está visível ou não
+          placeholderTextColor="#888"
+          value={senha}
+          onChangeText={setSenha}
+          autoCapitalize="none"
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#a0a0c0" />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
@@ -89,14 +100,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1e1e2f',
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: 'center', // Manter o centro para os outros elementos
   },
   title: {
-    fontSize: 28,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 24,
+    marginBottom: 8,
     textAlign: 'center',
+    marginTop: -20, // Mover o título para cima
+  },
+  subTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 40,
+    textAlign: 'center',
+    marginTop: 20, // Mover a descrição para cima
+  },
+  description: {
+    fontSize: 16,
+    color: '#a0a0c0',
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
   },
   input: {
     backgroundColor: '#2c2c3c',
@@ -107,6 +134,20 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     borderWidth: 1,
     borderColor: '#3c3c50',
+    width: '100%',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    position: 'relative',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: '7%',
+    padding: 10,
+    zIndex: 1,
   },
   button: {
     backgroundColor: '#4e9efc',

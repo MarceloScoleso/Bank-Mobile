@@ -1,5 +1,5 @@
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
-import HomeHeader from '../components/Header';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,9 +9,9 @@ const funcionalidades = [
   { titulo: 'Listar contas', rota: '/contas', emoji: '💳', cor: '#4e9efc' },
   { titulo: 'Consultar Saldo', rota: '/saldo', emoji: '💰', cor: '#3b82f6' },
   { titulo: 'Ver Extrato', rota: '/extrato', emoji: '📄', cor: '#38bdf8' },
-  { titulo: 'Resumo Financeiro', rota: '/contas/resumo-transacoes', emoji: '📊', cor: '#14b8a6' },
+  { titulo: 'Resumo Financeiro', rota: '/resumo-financeiro', emoji: '📊', cor: '#14b8a6' },
   { titulo: 'Fazer Transferência', rota: '/fazer-transferencia', emoji: '🔁', cor: '#22c55e' },
-  { titulo: 'Ver Transferências', rota: '/transferencias', emoji: '📑', cor: '#f59e0b' },
+  { titulo: 'Ver Transferências', rota: '/ver-transferencia', emoji: '📑', cor: '#f59e0b' },
 ] as const;
 
 export default function Page() {
@@ -29,7 +29,7 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      {apelido && <HomeHeader apelido={apelido} />}
+      {apelido && <Header apelido={apelido} />}
       
       <View style={styles.contentWrapper}>
         <ScrollView contentContainerStyle={styles.scrollContent}>

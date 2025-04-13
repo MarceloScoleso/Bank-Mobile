@@ -1,14 +1,15 @@
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import BotaoVoltarHome from '@/components/BotãoHome';
 
 export default function Page() {
   const [saldo, setSaldo] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
+  const [mostrarSaldo, setMostrarSaldo] = useState(false);
 
   useEffect(() => {
     const buscarSaldo = async () => {
@@ -43,20 +44,21 @@ export default function Page() {
 
     buscarSaldo();
   }, []);
+
   const [apelido, setApelido] = useState<string>('Carregando...');
 
-useEffect(() => {
-  const buscarApelido = async () => {
-    const nomeSalvo = await AsyncStorage.getItem('apelido');
-    if (nomeSalvo) {
-      setApelido(nomeSalvo);
-    } else {
-      setApelido('Visitante');
-    }
-  };
+  useEffect(() => {
+    const buscarApelido = async () => {
+      const nomeSalvo = await AsyncStorage.getItem('apelido');
+      if (nomeSalvo) {
+        setApelido(nomeSalvo);
+      } else {
+        setApelido('Visitante');
+      }
+    };
 
-  buscarApelido();
-}, []);
+    buscarApelido();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -73,7 +75,15 @@ useEffect(() => {
 
         {!loading && saldo !== null && (
           <View style={styles.cardSaldo}>
-            <Text style={styles.valor}>R$ {saldo.toFixed(2)}</Text>
+            <View style={styles.linhaSaldo}>
+              <Text style={styles.valor}>
+                {mostrarSaldo ? `R$ ${saldo.toFixed(2)}` : '•••••••'}
+              </Text>
+
+              <TouchableOpacity onPress={() => setMostrarSaldo(!mostrarSaldo)}>
+                <Text style={styles.olhinho}>{mostrarSaldo ? '🙈' : '👁️'}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -83,9 +93,7 @@ useEffect(() => {
           </Text>
         )}
 
-        <TouchableOpacity style={styles.botao} onPress={() => router.push('/home')}>
-          <Text style={styles.textoBotao}>⬅️ Voltar para a Home</Text>
-        </TouchableOpacity>
+        <BotaoVoltarHome />
       </View>
 
       <Footer />
@@ -123,10 +131,18 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 20,
   },
+  linhaSaldo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   valor: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  olhinho: {
+    fontSize: 28,
   },
   erro: {
     color: '#f87171',
@@ -139,17 +155,5 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: 16,
     textAlign: 'center',
-  },
-  botao: {
-    marginTop: 30,
-    backgroundColor: '#3b82f6',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-  },
-  textoBotao: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  }
 });

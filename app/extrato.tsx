@@ -1,16 +1,9 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BotaoVoltarHome from '@/components/BotãoHome';
 import { router } from 'expo-router';
 
 export default function Page() {
@@ -21,6 +14,7 @@ export default function Page() {
   const [erro, setErro] = useState<string | null>(null);
   const [pagina, setPagina] = useState(1);
   const [apelido, setApelido] = useState('');
+  const [mostrarSaldo, setMostrarSaldo] = useState(false); // Estado para controle da visibilidade do saldo
   const itensPorPagina = 10;
 
   const buscarDados = async (reset = false, paginaAtual = 1) => {
@@ -98,20 +92,12 @@ export default function Page() {
     const prefixo = isCredito ? '+' : '-'; // "+" para crédito e "-" para débito
     const valorFormatado = `${prefixo} R$ ${Math.abs(item.valor).toFixed(2)}`; // Valor formatado
     const categoria = item.categoria || 'Sem categoria'; // Categoria da transação, caso não exista, "Sem categoria"
-    
-    // Verificando se existe o apelido de origem ou destino
-    const origem = isCredito ? item.contaOrigem || 'Conta de origem não encontrada' : null;
-    const destino = !isCredito ? item.contaDestino || 'Conta de destino não encontrada' : null;
   
     return (
       <View style={styles.transacao}>
         <Text style={styles.descricao}>
           {item.descricao} <Text style={styles.categoria}>({categoria})</Text>
         </Text>
-  
-        {origem && <Text style={styles.apelidoTransacao}>De: {origem}</Text>}  // Se for crédito, mostra quem enviou
-        {destino && <Text style={styles.apelidoTransacao}>Para: {destino}</Text>}  // Se for débito, mostra para quem foi enviado
-  
         <Text style={styles.data}>{new Date(item.data).toLocaleDateString()}</Text>
         <Text style={[styles.valor, { color: corValor }]}>{valorFormatado}</Text>
       </View>
@@ -125,36 +111,41 @@ export default function Page() {
       <View style={styles.conteudo}>
         <Text style={styles.titulo}>📄 Extrato de Transações</Text>
 
-        {saldo !== null && (
-          <View style={styles.saldoBox}>
-            <Text style={styles.saldoTexto}>Saldo Atual</Text>
-            <Text style={styles.saldoValor}>R$ {saldo.toFixed(2)}</Text>
-          </View>
-        )}
-
         {loading ? (
           <ActivityIndicator size="large" color="#4e9efc" />
         ) : erro ? (
           <Text style={styles.erro}>{erro}</Text>
         ) : (
-          <FlatList
-            data={transacoes}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            onEndReached={carregarMais}
-            onEndReachedThreshold={0.5}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            ListFooterComponent={<View style={{ height: 20 }} />}
-          />
+          <>
+            <View style={styles.saldoBox}>
+              <Text style={styles.saldoTexto}>Saldo Atual</Text>
+              <View style={styles.saldoValorContainer}>
+                <Text style={styles.saldoValor}>
+                  {mostrarSaldo ? `R$ ${saldo?.toFixed(2)}` : '•••••••'}
+                </Text>
+                <TouchableOpacity onPress={() => setMostrarSaldo(!mostrarSaldo)}>
+                  <Text style={styles.olhinho}>{mostrarSaldo ? '🙈' : '👁️'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <FlatList
+              data={transacoes}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderItem}
+              onEndReached={carregarMais}
+              onEndReachedThreshold={0.5}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              ListFooterComponent={<View style={{ height: 20 }} />}
+            />
+          </>
         )}
 
         <TouchableOpacity style={styles.botaoNova} onPress={() => router.push('/fazer-transferencia')}>
           <Text style={styles.textoBotao}>➕ Nova Transação</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.push('/home')}>
-          <Text style={styles.textoBotao}>⬅️ Voltar para Home</Text>
-        </TouchableOpacity>
+        <BotaoVoltarHome />
       </View>
 
       <Footer />
@@ -186,10 +177,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  saldoValorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   saldoValor: {
     color: '#fff',
     fontSize: 28,
     fontWeight: 'bold',
+  },
+  olhinho: {
+    fontSize: 28,
   },
   transacao: {
     backgroundColor: '#2c2c3e',
@@ -206,11 +205,6 @@ const styles = StyleSheet.create({
     color: '#a1a1aa',
     fontSize: 14,
     fontStyle: 'italic',
-  },
-  apelidoTransacao: {
-    color: '#e4e4e7',
-    fontSize: 14,
-    marginBottom: 4,
   },
   data: {
     color: '#a1a1aa',
@@ -230,14 +224,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginTop: 10,
-    alignItems: 'center',
-  },
-  botaoVoltar: {
-    backgroundColor: '#4e9efc',
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 10,
-    marginBottom: 20,
     alignItems: 'center',
   },
   textoBotao: {
