@@ -16,7 +16,7 @@ export default function FazerTransferencia() {
   const [saldoAtual, setSaldoAtual] = useState<number | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [apelido, setApelido] = useState("");
-  const [mostrarSaldo, setMostrarSaldo] = useState(false); // Controle para mostrar ou esconder o saldo
+  const [mostrarSaldo, setMostrarSaldo] = useState(false);
   const router = useRouter();
 
   const buscarSaldo = async () => {
@@ -49,13 +49,27 @@ export default function FazerTransferencia() {
     buscarSaldo();
   }, []);
 
+  const formatarParaMoeda = (valorDigitado: string) => {
+    const numeroLimpo = valorDigitado.replace(/\D/g, "");
+    const valorNumerico = parseFloat(numeroLimpo) / 100;
+    if (isNaN(valorNumerico)) return "";
+    return valorNumerico.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
+  const extrairValorNumerico = (valorFormatado: string) => {
+    return parseFloat(valorFormatado.replace(/\D/g, "")) / 100;
+  };
+
   const realizarTransferencia = async () => {
     if (!apelidoDestino || !valor) {
       Alert.alert("Campos obrigatórios", "Informe o apelido do destinatário e o valor.");
       return;
     }
 
-    const valorNumerico = parseFloat(valor);
+    const valorNumerico = extrairValorNumerico(valor);
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
       Alert.alert("Valor inválido", "Digite um valor numérico válido.");
       return;
@@ -118,14 +132,10 @@ export default function FazerTransferencia() {
             ? "Carregando..."
             : mostrarSaldo
             ? `R$ ${saldoAtual.toFixed(2)}`
-            : "••••••"
-          }
-          {/* Ícone de mostrar saldo */}
+            : "••••••"}
           {!carregando && saldoAtual !== null && (
             <TouchableOpacity onPress={() => setMostrarSaldo(!mostrarSaldo)}>
-              <Text style={styles.olhoIcon}>
-                {mostrarSaldo ? "🙈" : "👁️"}
-              </Text>
+              <Text style={styles.olhoIcon}>{mostrarSaldo ? "🙈" : "👁️"}</Text>
             </TouchableOpacity>
           )}
         </Text>
@@ -140,12 +150,12 @@ export default function FazerTransferencia() {
         />
 
         <TextInput
-          placeholder="Valor (ex: 200)"
+          placeholder="Valor"
           placeholderTextColor="#9ca3af"
           style={styles.input}
           keyboardType="numeric"
           value={valor}
-          onChangeText={setValor}
+          onChangeText={(texto) => setValor(formatarParaMoeda(texto))}
         />
 
         <TextInput
@@ -181,7 +191,6 @@ export default function FazerTransferencia() {
             <TouchableOpacity onPress={realizarTransferencia} style={styles.botao}>
               <Text style={styles.textoBotao}>Confirmar Transferência</Text>
             </TouchableOpacity>
-
             <BotaoVoltarHome />
           </>
         )}
@@ -211,6 +220,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#22d3ee",
     fontWeight: "bold",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   olhoIcon: {
     fontSize: 20,
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
     color: "#f9fafb",
   },
   picker: {
-    height: 56, 
+    height: 56,
     borderWidth: 1,
     borderColor: "#374151",
     borderRadius: 14,

@@ -9,7 +9,7 @@ export default function Page() {
 
   const [apelido, setApelido] = useState('');
   const [senha, setSenha] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Estado para controlar a visibilidade da senha
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!apelido || !senha) {
@@ -34,7 +34,7 @@ export default function Page() {
         await AsyncStorage.setItem('apelido', apelido);
         await AsyncStorage.setItem('token', data.token);
 
-        // ✅ Redirecionar após o usuário tocar em "OK" no alerta
+      
         Alert.alert('Sucesso', `Bem-vindo, ${apelido}!`, [
           {
             text: 'OK',
@@ -70,7 +70,7 @@ export default function Page() {
         <TextInput
           style={styles.input}
           placeholder="Senha"
-          secureTextEntry={!showPassword} // Controla se a senha está visível ou não
+          secureTextEntry={!showPassword} 
           placeholderTextColor="#888"
           value={senha}
           onChangeText={setSenha}
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1e1e2f',
     padding: 24,
-    justifyContent: 'center', // Manter o centro para os outros elementos
+    justifyContent: 'center', 
   },
   title: {
     fontSize: 36,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 8,
     textAlign: 'center',
-    marginTop: -20, // Mover o título para cima
+    marginTop: -20, 
   },
   subTitle: {
     fontSize: 24,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 40,
     textAlign: 'center',
-    marginTop: 20, // Mover a descrição para cima
+    marginTop: 20, 
   },
   description: {
     fontSize: 16,

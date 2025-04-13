@@ -61,7 +61,7 @@ export default function Page() {
           </View>
         </ScrollView>
 
-        {/* Footer fixo fora do ScrollView */}
+        
         <Footer />
       </View>
     </View>

@@ -14,7 +14,7 @@ export default function Page() {
   const [erro, setErro] = useState<string | null>(null);
   const [pagina, setPagina] = useState(1);
   const [apelido, setApelido] = useState('');
-  const [mostrarSaldo, setMostrarSaldo] = useState(false); // Estado para controle da visibilidade do saldo
+  const [mostrarSaldo, setMostrarSaldo] = useState(false); 
   const itensPorPagina = 10;
 
   const buscarDados = async (reset = false, paginaAtual = 1) => {
@@ -25,7 +25,7 @@ export default function Page() {
 
       if (!token) throw new Error('Token não encontrado');
 
-      // Extrato
+      
       const resTransacoes = await fetch(
         'https://mock-bank-mock-back.yexuz7.easypanel.host/contas/extrato?tipo=todas',
         {
@@ -47,7 +47,7 @@ export default function Page() {
           : [...transacoes, ...dadosTransacoes.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina)]
       );
 
-      // Saldo
+    
       const resSaldo = await fetch(
         'https://mock-bank-mock-back.yexuz7.easypanel.host/contas/saldo',
         {
@@ -86,12 +86,12 @@ export default function Page() {
   };
 
   const renderItem = ({ item }: any) => {
-    const tipo = item.tipo?.toLowerCase(); // 'recebida' ou 'enviada'
-    const isCredito = tipo === 'recebida'; // Transação recebida (do destino)
-    const corValor = isCredito ? '#22c55e' : '#ef4444'; // Verde para crédito, vermelho para débito
-    const prefixo = isCredito ? '+' : '-'; // "+" para crédito e "-" para débito
-    const valorFormatado = `${prefixo} R$ ${Math.abs(item.valor).toFixed(2)}`; // Valor formatado
-    const categoria = item.categoria || 'Sem categoria'; // Categoria da transação, caso não exista, "Sem categoria"
+    const tipo = item.tipo?.toLowerCase(); 
+    const isCredito = tipo === 'recebida'; 
+    const corValor = isCredito ? '#22c55e' : '#ef4444'; 
+    const prefixo = isCredito ? '+' : '-'; 
+    const valorFormatado = `${prefixo} R$ ${Math.abs(item.valor).toFixed(2)}`; 
+    const categoria = item.categoria || 'Sem categoria'; 
   
     return (
       <View style={styles.transacao}>

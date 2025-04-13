@@ -10,11 +10,32 @@ export default function Page() {
   const [cpf, setCpf] = useState('');
   const [apelido, setApelido] = useState('');
   const [senha, setSenha] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Estado para controlar a visibilidade da senha
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  
+  const formatCpf = (text: string) => {
+    const cleaned = text.replace(/\D/g, ''); 
+    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})$/);
+    if (!match) return text;
+
+    return [
+      match[1],
+      match[2] ? '.' + match[2] : '',
+      match[3] ? '.' + match[3] : '',
+      match[4] ? '-' + match[4] : '',
+    ].join('');
+  };
 
   const handleRegister = async () => {
-    if (!nome || !cpf || !apelido || !senha) {
+    if (!nome || !cpf || !apelido || !senha || !confirmarSenha) {
       Alert.alert('Erro', 'Preencha todos os campos!');
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
       return;
     }
 
@@ -65,10 +86,12 @@ export default function Page() {
       />
       <TextInput
         style={styles.input}
-        placeholder="Documento (CPF)"
+        placeholder="CPF (000.000.000-00)"
         placeholderTextColor="#888"
         value={cpf}
-        onChangeText={setCpf}
+        keyboardType="numeric"
+        onChangeText={(text) => setCpf(formatCpf(text))}
+        maxLength={14}
       />
       <TextInput
         style={styles.input}
@@ -77,17 +100,34 @@ export default function Page() {
         value={apelido}
         onChangeText={setApelido}
       />
+
+    
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
           placeholder="Senha"
-          secureTextEntry={!showPassword} // Controla se a senha está visível ou não
+          secureTextEntry={!showPassword}
           placeholderTextColor="#888"
           value={senha}
           onChangeText={setSenha}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
           <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#a0a0c0" />
+        </TouchableOpacity>
+      </View>
+
+    
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar Senha"
+          secureTextEntry={!showConfirmPassword}
+          placeholderTextColor="#888"
+          value={confirmarSenha}
+          onChangeText={setConfirmarSenha}
+        />
+        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+          <Ionicons name={showConfirmPassword ? 'eye' : 'eye-off'} size={24} color="#a0a0c0" />
         </TouchableOpacity>
       </View>
 
@@ -143,13 +183,12 @@ const styles = StyleSheet.create({
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
     position: 'relative',
   },
   eyeIcon: {
     position: 'absolute',
     right: 10,
-    top: '7%', 
+    top: '7%',
     padding: 10,
     zIndex: 1,
   },

@@ -1,4 +1,4 @@
-import {View,Text,TextInput,StyleSheet,TouchableOpacity,Alert,ScrollView,Modal,FlatList,} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView, Modal, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -44,7 +44,7 @@ export default function Page() {
             const dadosFiltrados = {
               email: data.email || '',
               telefone: data.telefone || '',
-              dataNascimento: data.dataNascimento || '',
+              dataNascimento: formatarParaDDMMYYYY(data.dataNascimento || ''),
               endereco: data.endereco || '',
               tipoConta: data.tipoConta || '',
             };
@@ -82,11 +82,29 @@ export default function Page() {
     return regex.test(email);
   };
 
+  const formatarParaDDMMYYYY = (data: string) => {
+    if (!data.includes('-')) return data;
+    const [ano, mes, diaComHora] = data.split('-');
+    const dia = diaComHora.split('T')[0];
+    return `${dia}/${mes}/${ano}`;
+  };
+
+  const formatarParaYYYYMMDD = (data: string) => {
+    if (!data.includes('/')) return data;
+    const [dia, mes, ano] = data.split('/');
+    return `${ano}-${mes}-${dia}`;
+  };
+
   const atualizarPerfil = async () => {
     if (!validarEmail(form.email)) {
       Alert.alert('Email inválido', 'Por favor, insira um e-mail válido.');
       return;
     }
+
+    const formData = {
+      ...form,
+      dataNascimento: formatarParaYYYYMMDD(form.dataNascimento),
+    };
 
     try {
       const response = await fetch(
@@ -98,7 +116,7 @@ export default function Page() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(form),
+          body: JSON.stringify(formData),
         }
       );
 
@@ -165,10 +183,9 @@ export default function Page() {
             value={form.dataNascimento}
             onChangeText={(value) => handleInputChange('dataNascimento', value)}
             mask={[
-              /\d/, /\d/, /\d/, /\d/, '-',
-              /\d/, /\d/, '-', /\d/, /\d/
+              /\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/
             ]}
-            placeholder="AAAA-MM-DD"
+            placeholder="DD/MM/AAAA"
             keyboardType="numeric"
             placeholderTextColor="#999"
           />
@@ -270,7 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   button: {
-    backgroundColor: '#4CAF50', 
+    backgroundColor: '#4CAF50',
     padding: 16,
     borderRadius: 12,
     marginTop: 20,

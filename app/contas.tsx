@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 
-// Componentes reutilizáveis
+
+
 import HomeHeader from '../components/Header';
 import Footer from '../components/Footer';
 import BotaoVoltarHome from '@/components/BotãoHome';

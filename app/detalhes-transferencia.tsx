@@ -18,7 +18,7 @@ export default function DetalhesTransferencia() {
   const params = useLocalSearchParams<TransferenciaParams>();
   const [apelido, setApelido] = useState('');
 
-  // Formata os dados recebidos
+
   const transferencia = {
     ...params,
     valor: parseFloat(params.valor),
@@ -33,7 +33,7 @@ export default function DetalhesTransferencia() {
     buscarApelido();
   }, []);
 
-  // Formata os valores para exibição
+
   const prefixo = transferencia.tipo === 'recebida' ? '+' : '-';
   const corValor = transferencia.tipo === 'recebida' ? styles.valorRecebido : styles.valorEnviado;
   const valorFormatado = `${prefixo} R$ ${transferencia.valor.toFixed(2)}`;
@@ -85,7 +85,7 @@ export default function DetalhesTransferencia() {
           )}
         </View>
 
-        {/* Botão Voltar com novo estilo */}
+      
         <TouchableOpacity 
           style={styles.botaoVoltar} 
           onPress={() => router.back()}
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     maxWidth: '60%',
   },
-  // Estilos do botão igual ao da página VerTransferencias
+  
   botaoVoltar: {
     backgroundColor: '#4e9efc',
     padding: 16,
